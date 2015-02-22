@@ -50,12 +50,8 @@ colnames(xytrain)[2]<- "Activity"
 ##Combine test and training sets together.
 totaldataset <- rbind(xytest, xytrain)
 
-##Only 
-reduce1stds <- totaldataset[,grep("std", colnames(totaldataset), fixed=T)]
-reduce1means <- totaldataset[,grep("mean", colnames(totaldataset), fixed=T)]
-
 ##Only grab the columns in the new dataset that have the words "mean", "std", "Activity" and "Subjects" in the titles.
-reduce1meansandstdsandothers<- totaldataset[,(grepl("mean", colnames(totaldataset), fixed=T) | grepl("std", colnames(totaldataset), fixed =T)) | (grepl("Subjects", colnames(totaldataset)) | grepl("Activity", colnames(totaldataset), fixed=T))]
+reducedSet<- totaldataset[,(grepl("mean", colnames(totaldataset), fixed=T) | grepl("std", colnames(totaldataset), fixed =T)) | (grepl("Subjects", colnames(totaldataset)) | grepl("Activity", colnames(totaldataset), fixed=T))]
 
 
 ##Grab the activity labels columns 1 and 2 (number of activity, and corresponding activity label)
@@ -66,10 +62,10 @@ activitylabelscol2 <-activitylabels[,2]
 
 ##Loop from 1 to the last element in the table (6 here), and substitute the number with the corresponding activity.
 for(i in 1:length(activitylabelscol2)){
-  reduce1meansandstdsandothers[,2]<-sub(activitylabelscol1[i], activitylabelscol2[i], reduce1meansandstdsandothers[,2])
+  reducedSet[,2]<-sub(activitylabelscol1[i], activitylabelscol2[i], reducedSet[,2])
 }
 
 ##From the data set, create a second, independent tidy data set with the average of each variable for each activity and each subject.
-FinalDataSet<- aggregate(reduce1meansandstdsandothers[3:length(reduce1meansandstdsandothers)],list(Subjects = reduce1meansandstdsandothers$Subjects, Activity = reduce1meansandstdsandothers$Activity), mean)
+FinalDataSet<- aggregate(reducedSet[3:length(reducedSet)],list(Subjects = reducedSet$Subjects, Activity = reducedSet$Activity), mean)
 
 ##180 rows
